@@ -75,6 +75,7 @@ export function ResearchPanel({
   const [topic, setTopic] = useState('');
   const [context, setContext] = useState('');
   const [selectedAgent, setSelectedAgent] = useState<string>('');
+  const [agentDropdownOpen, setAgentDropdownOpen] = useState(false);
   const [showContext, setShowContext] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
 
@@ -135,20 +136,39 @@ export function ResearchPanel({
         </div>
 
         {/* Agent attribution */}
-        <div>
+        <div className="relative">
           <label className="text-[10px] text-accent-muted uppercase tracking-wider block mb-1.5">
             Run as agent (optional)
           </label>
-          <select
-            value={selectedAgent}
-            onChange={e => setSelectedAgent(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-white/20 transition-colors"
-          >
-            <option value="">No attribution</option>
-            {agents.map(a => (
-              <option key={a.id} value={a.id}>{a.name} ({a.role ?? 'Agent'})</option>
-            ))}
-          </select>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setAgentDropdownOpen(!agentDropdownOpen)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white/80 text-left flex items-center justify-between hover:border-white/20 transition-colors"
+            >
+              <span>{selectedAgent ? (agents.find(a => a.id === selectedAgent)?.name ?? 'Unknown') + ' (' + (agents.find(a => a.id === selectedAgent)?.role ?? 'Agent') + ')' : 'No attribution'}</span>
+              <span className="text-white/30 text-xs">▾</span>
+            </button>
+            {agentDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a1a] border border-white/15 rounded-lg overflow-hidden z-50">
+                <div
+                  className="px-3 py-2 text-sm text-white/60 hover:bg-white/8 cursor-pointer transition-colors"
+                  onClick={() => { setSelectedAgent(''); setAgentDropdownOpen(false); }}
+                >
+                  No attribution
+                </div>
+                {agents.map(a => (
+                  <div
+                    key={a.id}
+                    className={`px-3 py-2 text-sm cursor-pointer transition-colors ${selectedAgent === a.id ? 'bg-white/10 text-white' : 'text-white/80 hover:bg-white/8'}`}
+                    onClick={() => { setSelectedAgent(a.id); setAgentDropdownOpen(false); }}
+                  >
+                    {a.name} <span className="text-white/40">({a.role ?? 'Agent'})</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Extra context toggle */}
