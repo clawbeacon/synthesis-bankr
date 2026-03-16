@@ -2,7 +2,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY packages/frontend/package*.json ./packages/frontend/
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build --workspace=@beacon-bankr/frontend
 
