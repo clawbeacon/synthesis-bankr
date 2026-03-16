@@ -282,7 +282,8 @@ function BeaconApp() {
         {/* ── Research tab ── */}
         {activeTab === 'research' && (
           <div className="flex-1 flex overflow-hidden">
-            <div className="w-80 border-r border-white/5 overflow-y-auto flex-shrink-0 p-4 bg-[#0d0d0d]">
+            {/* Left: input panel - fixed width, only show when no result OR loading */}
+            <div className={`border-r border-white/5 overflow-y-auto flex-shrink-0 p-4 bg-[#0d0d0d] transition-all duration-300 ${ai.researchResult ? 'w-72' : 'w-96'}`}>
               <div className="text-[9px] text-white/20 uppercase tracking-widest mb-3">Run research</div>
               <ResearchPanel
                 agents={agents}
@@ -295,13 +296,14 @@ function BeaconApp() {
                 onClear={ai.clearResearch}
               />
             </div>
-            <main className="flex-1 overflow-y-auto p-5">
+            {/* Right: result panel - takes remaining space */}
+            <main className="flex-1 overflow-y-auto p-6 min-w-0">
               {ai.researchResult ? (
-                <div className="max-w-2xl">
-                  <h2 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{ai.researchResult.report.title}</h2>
-                  <p className="text-xs text-white/40 mb-4">{ai.researchResult.report.summary}</p>
-                  <div className="prose prose-invert prose-sm max-w-none text-white/60 text-[12px] leading-relaxed">
-                    <pre className="whitespace-pre-wrap text-[11px] text-white/50 bg-white/3 border border-white/5 p-4 rounded-lg overflow-auto">{ai.researchResult.analysis}</pre>
+                <div className="w-full">
+                  <h2 className="text-base font-semibold text-white mb-2 leading-snug" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>{ai.researchResult.report.title}</h2>
+                  <p className="text-xs text-white/40 mb-5 leading-relaxed">{ai.researchResult.report.summary}</p>
+                  <div className="text-[12px] text-white/60 leading-relaxed whitespace-pre-wrap font-mono bg-white/3 border border-white/5 p-5 rounded-lg">
+                    {ai.researchResult.analysis}
                   </div>
                 </div>
               ) : (
