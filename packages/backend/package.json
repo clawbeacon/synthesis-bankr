@@ -1,0 +1,23 @@
+{
+  "name": "@beacon-bankr/backend",
+  "version": "1.0.0",
+  "description": "Beacon Backend — Fastify API + Bankr LLM Multi-Model Gateway",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "migrate": "node src/migrate.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/swagger": "^9.6.1",
+    "@fastify/swagger-ui": "^5.2.5",
+    "better-sqlite3": "^11.7.0",
+    "fastify": "^5.7.2",
+    "js-yaml": "^4.1.0",
+    "pg": "^8.11.3"
+  }
+}
