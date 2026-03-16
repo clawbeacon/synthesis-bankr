@@ -50,6 +50,7 @@ function broadcast(event, data) {
 
 const BANKR_LLM_URL = 'https://llm.bankr.bot/v1/chat/completions';
 const { routeRequest, CATALOG } = require('./router');
+const { startFeeSync } = require('./fee-sync');
 
 /**
  * Select model using the full Bankr Router (15-dimension scoring).
@@ -422,6 +423,18 @@ fastify.delete('/api/reports/:id', {
 
 // ── Agents CRUD (lean version) ────────────────────────────────────────────
 
+fastify.post('/api/economy/sync', {
+  schema: { tags: ['Economy'], summary: 'Manually trigger fee sync from Bankr' }
+}, async (request, reply) => {
+  const { syncFees } = require('./fee-sync');
+  try {
+    await syncFees({ dbAdapter, broadcast, logger: fastify.log });
+    return { success: true, message: 'Fee sync triggered' };
+  } catch (err) {
+    return reply.status(500).send({ error: err.message });
+  }
+});
+
 fastify.get('/api/agents', {
   schema: { tags: ['Agents'], summary: 'List all agents' },
 }, async () => {
@@ -702,6 +715,9 @@ const start = async () => {
 
   await fastify.listen({ port: PORT, host: '0.0.0.0' });
   fastify.log.info(`Beacon API running on port ${PORT}`);
+
+  // Start fee sync service
+  startFeeSync({ dbAdapter, broadcast, logger: fastify.log });
 };
 
 module.exports = { start };
