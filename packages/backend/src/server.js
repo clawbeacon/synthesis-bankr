@@ -458,7 +458,28 @@ fastify.post('/api/agents', {
 
 fastify.put('/api/agents/:id', {
   ...withAuth,
-  schema: { tags: ['Agents'], summary: 'Update agent (including token & wallet info)' },
+  schema: {
+    tags: ['Agents'],
+    summary: 'Update agent (including token & wallet info)',
+    params: {
+      type: 'object',
+      required: ['id'],
+      properties: { id: { type: 'integer', description: 'Agent ID' } }
+    },
+    body: {
+      type: 'object',
+      properties: {
+        name:           { type: 'string' },
+        role:           { type: 'string' },
+        description:    { type: 'string' },
+        status:         { type: 'string', enum: ['idle', 'working', 'offline'] },
+        token_symbol:   { type: 'string' },
+        token_address:  { type: 'string' },
+        wallet_address: { type: 'string' },
+        fee_balance:    { type: 'number' },
+      }
+    }
+  },
 }, async (request, reply) => {
   const { id } = request.params;
   const { name, role, description, status, token_symbol, token_address, wallet_address, fee_balance } = request.body;
