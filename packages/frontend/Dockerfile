@@ -9,6 +9,9 @@ RUN npm run build --workspace=@beacon-bankr/frontend
 FROM node:22-alpine
 RUN npm install -g http-server
 COPY --from=builder /app/packages/frontend/dist /app
+COPY packages/frontend/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 WORKDIR /app
 EXPOSE 8080
-CMD ["http-server", "-p", "8080", "-c-1", "--spa"]
+CMD ["/app/entrypoint.sh"]
+```
