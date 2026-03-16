@@ -3,7 +3,7 @@
  *
  * Shows:
  * - Research topic input
- * - Live pipeline progress (Step 1 gemini-flash → Step 2 claude-sonnet → Step 3 gemini-flash)
+ * - Live pipeline progress (Step 1 eco → Step 2 premium → Step 3 eco)
  * - Final report with key findings, confidence, tags
  * - Model usage economy tracker
  */
@@ -281,7 +281,7 @@ export function ResearchPanel({
         </div>
 
         <p className="text-[10px] text-accent-muted text-center">
-          Using 3 models: gemini-flash → claude-sonnet → gemini-flash
+          Powered by Beacon Smart Router — model selected dynamically
         </p>
       </div>
     );
