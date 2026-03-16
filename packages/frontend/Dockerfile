@@ -14,4 +14,3 @@ RUN chmod +x /app/entrypoint.sh
 WORKDIR /app
 EXPOSE 8080
 CMD ["/app/entrypoint.sh"]
-```
