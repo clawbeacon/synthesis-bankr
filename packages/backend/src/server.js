@@ -118,7 +118,10 @@ async function callBankrLLM(BANKR_KEY, messages, systemPrompt, model, max_tokens
   });
 
   const data = await response.json();
-  if (!response.ok) throw Object.assign(new Error('Bankr LLM error'), { status: response.status, data });
+  if (!response.ok) {
+    const errMsg = typeof data === 'object' ? (data.error?.message || data.message || JSON.stringify(data)) : String(data);
+    throw Object.assign(new Error(`Bankr LLM error ${response.status}: ${errMsg}`), { status: response.status, data: errMsg });
+  }
   return data;
 }
 
@@ -165,7 +168,10 @@ fastify.post('/api/ai/chat', {
       },
     });
   } catch (err) {
-    return reply.status(err.status || 500).send({ error: err.data || 'LLM call failed' });
+    const chatErrMsg = typeof err.data === 'string' ? err.data
+      : err.data ? JSON.stringify(err.data)
+      : 'LLM call failed';
+    return reply.status(err.status || 500).send({ error: chatErrMsg });
   }
 });
 
@@ -303,7 +309,10 @@ fastify.post('/api/ai/research', {
 
   } catch (err) {
     fastify.log.error('[Research] pipeline error:', err);
-    return reply.status(err.status || 500).send({ error: err.data || err.message || 'Pipeline failed', pipeline });
+    const errMsg = typeof err.data === 'string' ? err.data
+      : err.data ? JSON.stringify(err.data)
+      : err.message || 'Pipeline failed';
+    return reply.status(err.status || 500).send({ error: errMsg, pipeline });
   }
 });
 
