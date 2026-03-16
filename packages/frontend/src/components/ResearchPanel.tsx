@@ -41,8 +41,8 @@ const MODEL_LABELS: Record<string, string> = {
 };
 
 function ModelBadge({ model }: { model: string }) {
-  const colors = MODEL_COLORS[model] ?? MODEL_COLORS[MODELS.fast];
-  const label = MODEL_LABELS[model] ?? model.split('/').pop() ?? model;
+  const colors = PROFILE_COLORS[model] ?? MODEL_COLORS[model] ?? MODEL_COLORS[MODELS.fast];
+  const label = MODEL_LABELS[model] ?? model;
   return (
     <span className={`text-[9px] px-2 py-0.5 rounded border font-medium ${colors.text} ${colors.bg} ${colors.border}`}>
       {label}
@@ -51,10 +51,15 @@ function ModelBadge({ model }: { model: string }) {
 }
 
 const PIPELINE_STEPS = [
-  { step: 1, label: 'Screen topic',   model: MODELS.fast,   icon: Zap,      desc: 'Quick extraction of key questions & data points' },
-  { step: 2, label: 'Deep analysis',  model: MODELS.deep,   icon: Brain,    desc: 'Thorough analysis with findings & evidence' },
-  { step: 3, label: 'Format report',  model: MODELS.medium, icon: FileText, desc: 'Structure output as clean JSON report' },
+  { step: 1, label: 'Screen topic',   model: 'eco profile',     icon: Zap,      desc: 'Cheapest eligible model — fast screening' },
+  { step: 2, label: 'Deep analysis',  model: 'premium profile', icon: Brain,    desc: 'Best reasoning model — thorough analysis' },
+  { step: 3, label: 'Format report',  model: 'eco profile',     icon: FileText, desc: 'Reliable structured JSON output' },
 ];
+
+const PROFILE_COLORS: Record<string, { text: string; bg: string; border: string }> = {
+  'eco profile':     { text: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20' },
+  'premium profile': { text: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+};
 
 const CONFIDENCE_STYLES: Record<string, { text: string; bg: string; border: string }> = {
   high:   { text: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20' },
@@ -98,7 +103,7 @@ export function ResearchPanel({
           <div className="flex flex-col gap-2">
             {PIPELINE_STEPS.map((s, i) => {
               const Icon = s.icon as React.ElementType;
-              const colors = MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
+              const colors = PROFILE_COLORS[s.model] ?? MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
               return (
                 <div key={s.step} className="flex items-start gap-2.5">
                   <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 mt-0.5 border ${colors.bg} ${colors.border}`}>
@@ -237,7 +242,7 @@ export function ResearchPanel({
             const currentStep = researchProgress?.step ?? 0;
             const isDone = s.step < currentStep;
             const isActive = s.step === currentStep;
-            const colors = MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
+            const colors = PROFILE_COLORS[s.model] ?? MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
 
             return (
               <div
