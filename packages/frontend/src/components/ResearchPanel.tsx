@@ -14,7 +14,6 @@ import ReactMarkdown from 'react-markdown';
 import type { Agent } from '../types';
 import type { ResearchResult, ModelUsageEntry } from '../hooks/useBankrAI';
 import { MODELS } from '../hooks/useBankrAI';
-import { AgentAvatar } from './AgentAvatar';
 
 interface ResearchPanelProps {
   agents: Agent[];
@@ -97,7 +96,7 @@ export function ResearchPanel({
           <p className="text-xs text-accent-muted mb-3 font-medium">3-step autonomous pipeline</p>
           <div className="flex flex-col gap-2">
             {PIPELINE_STEPS.map((s, i) => {
-              const Icon = s.icon;
+              const Icon = s.icon as React.ElementType;
               const colors = MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
               return (
                 <div key={s.step} className="flex items-start gap-2.5">
@@ -218,7 +217,6 @@ export function ResearchPanel({
             const currentStep = researchProgress?.step ?? 0;
             const isDone = s.step < currentStep;
             const isActive = s.step === currentStep;
-            const Icon = s.icon;
             const colors = MODEL_COLORS[s.model] ?? MODEL_COLORS[MODELS.fast];
 
             return (
