@@ -89,3 +89,20 @@ export interface ModelUsageEntry {
   calls: number;
   reason: string;
 }
+
+// Legacy compatibility types for useBankrAI hook
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  status: string;
+  agentId?: string;
+}
+
+export interface Message {
+  id: string;
+  agentId: string;
+  agentName: string;
+  content: string;
+  timestamp: string;
+}
