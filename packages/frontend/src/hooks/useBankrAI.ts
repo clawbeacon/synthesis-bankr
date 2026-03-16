@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import type { Task, Message, Agent } from '../types';
+import type { Agent } from '../types';
 
 const API_BASE: string =
   window.__CLAW_CONFIG__?.API_URL ??
@@ -91,7 +91,7 @@ function extractContent(data: LLMResponse): string {
   return data.choices?.[0]?.message?.content ?? '';
 }
 
-export function useBankrAI(tasks: Task[], messages: Message[], agents: Agent[]) {
+export function useBankrAI(tasks: unknown[], messages: unknown[], agents: Agent[]) {
 
   const [modelUsage, setModelUsage] = useState<ModelUsageEntry[]>([]);
 
@@ -142,7 +142,7 @@ export function useBankrAI(tasks: Task[], messages: Message[], agents: Agent[]) 
 
     const systemPrompt = [
       'You are an AI assistant for Beacon — a Kanban dashboard for autonomous AI agent teams.',
-      `Tasks (${tasks.length}): ${tasks.slice(0, 15).map(t => `[${t.status}] ${t.title}`).join(', ')}`,
+      `Tasks (${tasks.length}): ${(tasks as any[]).slice(0, 15).map(t => `[${t.status}] ${t.title}`).join(', ')}`,
       `Agents: ${agents.map(a => `${a.name} (${a.status})`).join(', ')}`,
       'Be concise and use markdown.',
     ].join('\n');
@@ -216,7 +216,7 @@ export function useBankrAI(tasks: Task[], messages: Message[], agents: Agent[]) 
     const inP = tasks.filter(t => t.status === 'in_progress');
     const rev = tasks.filter(t => t.status === 'review');
     const tod = tasks.filter(t => t.status === 'todo');
-    const fmt = (list: Task[]) => list.map(t => `- "${t.title}"${t.description ? `: ${t.description.slice(0, 100)}` : ''}`).join('\n');
+    const fmt = (list: unknown[]) => (list as any[]).map(t => `- "${t.title}"${t.description ? `: ${t.description.slice(0, 100)}` : ''}`).join('\n');
     try {
       const data = await callBankrLLM(
         [{ role: 'user', content: `In Progress:\n${fmt(inP)||'None'}\nIn Review:\n${fmt(rev)||'None'}\nTodo:\n${fmt(tod)||'None'}\nAgents: ${agents.map(a => `${a.name} (${a.status})`).join(', ')}` }],
@@ -237,7 +237,7 @@ export function useBankrAI(tasks: Task[], messages: Message[], agents: Agent[]) 
     setAgentBriefing('');
     const agent = agents.find(a => a.id === agentId);
     if (!agent) { setAgentBriefingError('Agent not found'); setAgentBriefingLoading(false); return; }
-    const agentTasks = tasks.filter(t => t.agentId === agentId && t.status !== 'completed');
+    const agentTasks = (tasks as any[]).filter(t => t.agentId === agentId && t.status !== 'completed');
     try {
       const data = await callBankrLLM(
         [{ role: 'user', content: `Agent: ${agent.name} (${agent.role ?? 'AI Agent'}) - ${agent.status}\nTasks:\n${agentTasks.map(t => `- [${t.status}] ${t.title}`).join('\n') || 'None'}\nTeam:\n${tasks.filter(t => t.status === 'in_progress' && t.agentId !== agentId).slice(0, 5).map(t => `- ${t.title}`).join('\n') || 'None'}` }],
