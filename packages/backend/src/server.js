@@ -268,8 +268,8 @@ fastify.post('/api/ai/research', {
         report.confidence || 'medium',
         analysis,
         dbAdapter.isSQLite()
-          ? JSON.stringify([MODELS.FLASH, MODELS.DEEP, MODELS.MEDIUM])
-          : [MODELS.FLASH, MODELS.DEEP, MODELS.MEDIUM],
+          ? JSON.stringify([step1Model, step2Model, step3Model])
+          : [step1Model, step2Model, step3Model],
         Date.now() - start,
       ]
     );
@@ -291,7 +291,7 @@ fastify.post('/api/ai/research', {
       meta: {
         topic,
         duration_ms: Date.now() - start,
-        models_used: [MODELS.FLASH, MODELS.DEEP, MODELS.MEDIUM],
+        models_used: [step1Model, step2Model, step3Model],
         steps: 3,
         agent_id: agent_id || null,
       },
