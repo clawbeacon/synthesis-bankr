@@ -1,0 +1,19 @@
+{
+  "name": "beacon-bankr",
+  "version": "1.0.0",
+  "description": "Beacon — Autonomous Research Agents powered by Bankr LLM Gateway",
+  "private": true,
+  "workspaces": [
+    "packages/backend",
+    "packages/frontend"
+  ],
+  "scripts": {
+    "dev:backend": "cd packages/backend && npm run dev",
+    "dev:frontend": "cd packages/frontend && npm run dev",
+    "build": "cd packages/frontend && npm run build",
+    "start": "cd packages/backend && npm run start"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

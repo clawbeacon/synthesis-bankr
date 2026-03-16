@@ -1,0 +1,5 @@
+# Railway deployment configuration for Claw Beacon
+# Let Railway auto-detect Dockerfile
+
+[start]
+cmd = "serve -s dist -l $PORT"
