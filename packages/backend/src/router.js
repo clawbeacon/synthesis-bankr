@@ -22,37 +22,47 @@
 // Costs in USD per 1M tokens (input / output)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── Bankr LLM Gateway — 23 models across 8 providers ────────────────────
+// Prices in USD per 1M tokens. Data from Bankr model catalog.
 const CATALOG = [
-  // ── Ultra-fast / cheap ────────────────────────────────────────────────────
-  { id: 'gemini-3-flash',           contextWindow: 1_000_000, supportsTools: true,  input: ['text','image'], cost: { input: 0.10,  output: 0.40  } },
-  { id: 'gemini-2.5-flash',         contextWindow: 1_000_000, supportsTools: true,  input: ['text','image'], cost: { input: 0.15,  output: 0.60  } },
-  { id: 'gpt-5-nano',               contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 0.15,  output: 0.60  } },
-  { id: 'grok-4.1-fast',            contextWindow: 131_000,   supportsTools: true,  input: ['text','image'], cost: { input: 0.20,  output: 0.80  } },
-  { id: 'deepseek-v3.2',            contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 0.27,  output: 1.10  } },
-  { id: 'qwen3.5-flash',            contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 0.30,  output: 1.20  } },
+  // ── Anthropic ─────────────────────────────────────────────────────────────
+  { id: 'claude-haiku-4.5',   contextWindow: 200_000,   maxTokens: 64_000,  supportsTools: true, input: ['text','image'], cost: { input: 1.00,  output: 5.00,  cacheRead: 0.10,  cacheWrite: 1.25  } },
+  { id: 'claude-sonnet-4.5',  contextWindow: 1_000_000, maxTokens: 64_000,  supportsTools: true, input: ['text','image'], cost: { input: 3.00,  output: 15.00, cacheRead: 0.30,  cacheWrite: 3.75  } },
+  { id: 'claude-sonnet-4.6',  contextWindow: 1_000_000, maxTokens: 128_000, supportsTools: true, input: ['text','image'], cost: { input: 3.00,  output: 15.00, cacheRead: 0.30,  cacheWrite: 3.75  } },
+  { id: 'claude-opus-4.5',    contextWindow: 200_000,   maxTokens: 64_000,  supportsTools: true, input: ['text','image'], cost: { input: 5.00,  output: 25.00, cacheRead: 0.50,  cacheWrite: 6.25  } },
+  { id: 'claude-opus-4.6',    contextWindow: 1_000_000, maxTokens: 128_000, supportsTools: true, input: ['text','image'], cost: { input: 5.00,  output: 25.00, cacheRead: 0.50,  cacheWrite: 6.25  } },
 
-  // ── Mid-range ─────────────────────────────────────────────────────────────
-  { id: 'gpt-5-mini',               contextWindow: 128_000,   supportsTools: true,  input: ['text','image'], cost: { input: 0.40,  output: 1.60  } },
-  { id: 'qwen3.5-plus',             contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 0.50,  output: 2.00  } },
-  { id: 'gemini-2.5-pro',           contextWindow: 1_000_000, supportsTools: true,  input: ['text','image'], cost: { input: 1.25,  output: 10.00 } },
-  { id: 'gemini-3-pro',             contextWindow: 1_000_000, supportsTools: true,  input: ['text','image'], cost: { input: 1.25,  output: 10.00 } },
-  { id: 'minimax-m2.5',             contextWindow: 1_000_000, supportsTools: true,  input: ['text'],         cost: { input: 0.80,  output: 3.50  } },
+  // ── Google ────────────────────────────────────────────────────────────────
+  { id: 'gemini-3.1-flash-lite', contextWindow: 1_000_000, maxTokens: 66_000, supportsTools: true, input: ['text','image'], cost: { input: 0.25,  output: 1.50,  cacheRead: 0.03,  cacheWrite: 0.08  } },
+  { id: 'gemini-3-flash',      contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text','image'], cost: { input: 0.50,  output: 3.00,  cacheRead: 0.05,  cacheWrite: 0.08  } },
+  { id: 'gemini-2.5-flash',    contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text','image'], cost: { input: 0.30,  output: 2.50,  cacheRead: 0.03,  cacheWrite: 0.08  } },
+  { id: 'gemini-2.5-pro',      contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text','image'], cost: { input: 1.25,  output: 10.00, cacheRead: 0.13,  cacheWrite: 0.38  } },
+  { id: 'gemini-3-pro',        contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text','image'], cost: { input: 2.00,  output: 12.00, cacheRead: 0.20,  cacheWrite: 0.38  } },
+  { id: 'gemini-3.1-pro',      contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text','image'], cost: { input: 2.00,  output: 12.00, cacheRead: 0.20,  cacheWrite: 0.38  } },
 
-  // ── Strong reasoning ──────────────────────────────────────────────────────
-  { id: 'gpt-5.2',                  contextWindow: 128_000,   supportsTools: true,  input: ['text','image'], cost: { input: 2.50,  output: 10.00 } },
-  { id: 'gpt-5.4',                  contextWindow: 128_000,   supportsTools: true,  input: ['text','image'], cost: { input: 6.00,  output: 24.00 } },
-  { id: 'kimi-k2.5',                contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 1.00,  output: 4.00  } },
+  // ── OpenAI ────────────────────────────────────────────────────────────────
+  { id: 'gpt-5-nano',          contextWindow: 400_000,   maxTokens: 128_000, supportsTools: true, input: ['text'],         cost: { input: 0.05,  output: 0.40,  cacheRead: 0.005  } },
+  { id: 'gpt-5-mini',          contextWindow: 400_000,   maxTokens: 128_000, supportsTools: true, input: ['text'],         cost: { input: 0.25,  output: 2.00,  cacheRead: 0.03   } },
+  { id: 'gpt-5.2',             contextWindow: 400_000,   maxTokens: 128_000, supportsTools: true, input: ['text'],         cost: { input: 1.75,  output: 14.00, cacheRead: 0.17   } },
+  { id: 'gpt-5.2-codex',       contextWindow: 400_000,   maxTokens: 128_000, supportsTools: true, input: ['text'],         cost: { input: 1.75,  output: 14.00, cacheRead: 0.17   } },
+  { id: 'gpt-5.4',             contextWindow: 1_100_000, maxTokens: 128_000, supportsTools: true, input: ['text','image'], cost: { input: 2.50,  output: 15.00, cacheRead: 0.25   } },
 
-  // ── Code specialists ──────────────────────────────────────────────────────
-  { id: 'qwen3-coder',              contextWindow: 256_000,   supportsTools: true,  input: ['text'],         cost: { input: 0.60,  output: 2.40  } },
-  { id: 'gpt-5.2-codex',            contextWindow: 128_000,   supportsTools: true,  input: ['text'],         cost: { input: 1.50,  output: 6.00  } },
+  // ── xAI ───────────────────────────────────────────────────────────────────
+  { id: 'grok-4.1-fast',       contextWindow: 2_000_000, maxTokens: 30_000,  supportsTools: true, input: ['text'],         cost: { input: 0.20,  output: 0.50,  cacheRead: 0.05   } },
 
-  // ── Claude family ─────────────────────────────────────────────────────────
-  { id: 'claude-haiku-4.5',         contextWindow: 200_000,   supportsTools: true,  input: ['text','image'], cost: { input: 0.80,  output: 4.00  } },
-  { id: 'claude-sonnet-4-20250514', contextWindow: 200_000,   supportsTools: true,  input: ['text','image'], cost: { input: 3.00,  output: 15.00 } },
-  { id: 'claude-sonnet-4.6',        contextWindow: 200_000,   supportsTools: true,  input: ['text','image'], cost: { input: 3.00,  output: 15.00 } },
-  { id: 'claude-opus-4.5',          contextWindow: 200_000,   supportsTools: true,  input: ['text','image'], cost: { input: 15.00, output: 75.00 } },
-  { id: 'claude-opus-4.6',          contextWindow: 200_000,   supportsTools: true,  input: ['text','image'], cost: { input: 15.00, output: 75.00 } },
+  // ── DeepSeek ──────────────────────────────────────────────────────────────
+  { id: 'deepseek-v3.2',       contextWindow: 164_000,   maxTokens: 66_000,  supportsTools: true, input: ['text'],         cost: { input: 0.26,  output: 0.38,  cacheRead: 0.13   } },
+
+  // ── Alibaba ───────────────────────────────────────────────────────────────
+  { id: 'qwen3.5-flash',       contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text'],         cost: { input: 0.10,  output: 0.40  } },
+  { id: 'qwen3.5-plus',        contextWindow: 1_000_000, maxTokens: 66_000,  supportsTools: true, input: ['text'],         cost: { input: 0.26,  output: 1.56  } },
+  { id: 'qwen3-coder',         contextWindow: 262_000,   maxTokens: 66_000,  supportsTools: true, input: ['text'],         cost: { input: 0.12,  output: 0.75,  cacheRead: 0.06   } },
+
+  // ── Moonshot ──────────────────────────────────────────────────────────────
+  { id: 'kimi-k2.5',           contextWindow: 262_000,   maxTokens: 66_000,  supportsTools: true, input: ['text'],         cost: { input: 0.45,  output: 2.20,  cacheRead: 0.23   } },
+
+  // ── MiniMax ───────────────────────────────────────────────────────────────
+  { id: 'minimax-m2.5',        contextWindow: 197_000,   maxTokens: 197_000, supportsTools: true, input: ['text'],         cost: { input: 0.27,  output: 0.95,  cacheRead: 0.03   } },
 ];
 
 const CATALOG_MAP = new Map(CATALOG.map(m => [m.id, m]));
@@ -62,33 +72,33 @@ const CATALOG_MAP = new Map(CATALOG.map(m => [m.id, m]));
 // ─────────────────────────────────────────────────────────────────────────────
 
 const TIERS = {
-  // Default (auto) profile
+  // Default (auto) profile — cost-optimal within tier
   auto: {
-    SIMPLE:    { primary: 'gpt-5-nano',     fallback: ['qwen3.5-flash', 'deepseek-v3.2', 'grok-4.1-fast', 'gemini-3-flash', 'gemini-2.5-flash'] },
-    MEDIUM:    { primary: 'deepseek-v3.2',  fallback: ['grok-4.1-fast', 'qwen3.5-plus', 'gpt-5-mini', 'gemini-3-flash', 'minimax-m2.5'] },
-    COMPLEX:   { primary: 'minimax-m2.5',   fallback: ['qwen3-coder', 'kimi-k2.5', 'gemini-2.5-pro', 'gemini-3-pro', 'gpt-5.2', 'claude-sonnet-4-20250514'] },
-    REASONING: { primary: 'gpt-5.2',        fallback: ['kimi-k2.5', 'gemini-3-pro', 'gemini-2.5-pro', 'gpt-5.4', 'claude-sonnet-4-20250514', 'claude-opus-4.6'] },
+    SIMPLE:    { primary: 'gpt-5-nano',          fallback: ['gemini-3.1-flash-lite', 'qwen3.5-flash', 'grok-4.1-fast', 'deepseek-v3.2', 'gemini-3-flash'] },
+    MEDIUM:    { primary: 'deepseek-v3.2',        fallback: ['grok-4.1-fast', 'qwen3.5-plus', 'minimax-m2.5', 'gpt-5-mini', 'kimi-k2.5'] },
+    COMPLEX:   { primary: 'minimax-m2.5',         fallback: ['kimi-k2.5', 'qwen3-coder', 'gpt-5.2', 'gemini-2.5-pro', 'gemini-3-pro', 'claude-sonnet-4.6'] },
+    REASONING: { primary: 'gpt-5.2',              fallback: ['kimi-k2.5', 'gemini-3-pro', 'gemini-3.1-pro', 'gpt-5.4', 'claude-sonnet-4.6', 'claude-opus-4.6'] },
   },
-  // Eco profile — minimise cost
+  // Eco profile — always cheapest eligible model
   eco: {
-    SIMPLE:    { primary: 'gpt-5-nano',     fallback: ['qwen3.5-flash', 'deepseek-v3.2', 'grok-4.1-fast'] },
-    MEDIUM:    { primary: 'deepseek-v3.2',  fallback: ['qwen3.5-flash', 'grok-4.1-fast', 'qwen3.5-plus', 'gpt-5-mini'] },
-    COMPLEX:   { primary: 'minimax-m2.5',   fallback: ['qwen3.5-plus', 'deepseek-v3.2', 'gemini-2.5-flash', 'gpt-5-mini'] },
-    REASONING: { primary: 'gpt-5.2',        fallback: ['kimi-k2.5', 'gemini-2.5-pro', 'gemini-3-pro'] },
+    SIMPLE:    { primary: 'gpt-5-nano',           fallback: ['gemini-3.1-flash-lite', 'qwen3.5-flash', 'grok-4.1-fast', 'deepseek-v3.2'] },
+    MEDIUM:    { primary: 'deepseek-v3.2',         fallback: ['qwen3.5-flash', 'grok-4.1-fast', 'qwen3.5-plus', 'minimax-m2.5', 'gpt-5-mini'] },
+    COMPLEX:   { primary: 'minimax-m2.5',          fallback: ['qwen3-coder', 'kimi-k2.5', 'deepseek-v3.2', 'gemini-2.5-flash', 'gpt-5-mini'] },
+    REASONING: { primary: 'gpt-5.2',               fallback: ['kimi-k2.5', 'gemini-2.5-pro', 'gemini-3-pro', 'claude-sonnet-4.5'] },
   },
-  // Premium profile — quality first
+  // Premium profile — quality first (Claude / GPT-5 preferred)
   premium: {
-    SIMPLE:    { primary: 'grok-4.1-fast',        fallback: ['claude-haiku-4.5', 'gpt-5-mini', 'gemini-3-flash'] },
-    MEDIUM:    { primary: 'claude-sonnet-4-20250514', fallback: ['gpt-5.2', 'gpt-5.2-codex', 'kimi-k2.5', 'gemini-3-pro'] },
-    COMPLEX:   { primary: 'claude-sonnet-4-20250514', fallback: ['gpt-5.4', 'claude-opus-4.6', 'claude-opus-4.5', 'gpt-5.2', 'gemini-3-pro'] },
-    REASONING: { primary: 'claude-opus-4.6',      fallback: ['gpt-5.4', 'claude-opus-4.5', 'gpt-5.2', 'claude-sonnet-4-20250514', 'kimi-k2.5'] },
+    SIMPLE:    { primary: 'claude-haiku-4.5',      fallback: ['grok-4.1-fast', 'gemini-3-flash', 'gpt-5-mini'] },
+    MEDIUM:    { primary: 'claude-sonnet-4.6',      fallback: ['claude-sonnet-4.5', 'gpt-5.2', 'gpt-5.2-codex', 'kimi-k2.5', 'gemini-3-pro'] },
+    COMPLEX:   { primary: 'claude-sonnet-4.6',      fallback: ['gpt-5.4', 'claude-opus-4.6', 'claude-opus-4.5', 'gpt-5.2', 'gemini-3.1-pro'] },
+    REASONING: { primary: 'claude-opus-4.6',        fallback: ['gpt-5.4', 'claude-opus-4.5', 'claude-sonnet-4.6', 'gpt-5.2', 'kimi-k2.5'] },
   },
   // Agentic profile — optimised for multi-step / coding tasks
   agentic: {
-    SIMPLE:    { primary: 'gpt-5-mini',       fallback: ['grok-4.1-fast', 'gemini-3-flash', 'deepseek-v3.2'] },
-    MEDIUM:    { primary: 'qwen3-coder',       fallback: ['minimax-m2.5', 'gpt-5.2-codex', 'deepseek-v3.2', 'claude-sonnet-4-20250514'] },
-    COMPLEX:   { primary: 'gpt-5.2-codex',    fallback: ['qwen3-coder', 'claude-sonnet-4-20250514', 'gpt-5.4', 'minimax-m2.5', 'gemini-3-pro'] },
-    REASONING: { primary: 'gpt-5.2-codex',    fallback: ['claude-sonnet-4-20250514', 'gpt-5.4', 'claude-opus-4.6', 'kimi-k2.5'] },
+    SIMPLE:    { primary: 'gpt-5-mini',            fallback: ['grok-4.1-fast', 'gemini-3-flash', 'deepseek-v3.2'] },
+    MEDIUM:    { primary: 'qwen3-coder',            fallback: ['minimax-m2.5', 'gpt-5.2-codex', 'deepseek-v3.2', 'claude-sonnet-4.6'] },
+    COMPLEX:   { primary: 'gpt-5.2-codex',         fallback: ['qwen3-coder', 'claude-sonnet-4.6', 'gpt-5.4', 'minimax-m2.5', 'gemini-3.1-pro'] },
+    REASONING: { primary: 'gpt-5.2-codex',         fallback: ['claude-sonnet-4.6', 'gpt-5.4', 'claude-opus-4.6', 'kimi-k2.5'] },
   },
 };
 
